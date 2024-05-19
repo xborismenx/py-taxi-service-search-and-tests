@@ -2,8 +2,14 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.test import TestCase
 from django.contrib.auth import get_user_model
-from taxi.forms import CarForm, DriverCreationForm, validate_license_number, ManufacturerListSearchForm, \
-    DriverListSearchForm, CarListSearchForm
+from taxi.forms import (
+    CarForm,
+    DriverCreationForm,
+    validate_license_number,
+    ManufacturerListSearchForm,
+    DriverListSearchForm,
+    CarListSearchForm,
+)
 from taxi.models import Car, Manufacturer, Driver
 
 
@@ -11,14 +17,21 @@ class CarFormTest(TestCase):
     def test_car_form_fields(self):
         form = CarForm()
 
-        self.assertIn('drivers', form.fields)
+        self.assertIn("drivers", form.fields)
 
-        self.assertTrue(isinstance(form.fields['drivers'], forms.ModelMultipleChoiceField))
+        self.assertTrue(
+            isinstance(form.fields["drivers"], forms.ModelMultipleChoiceField)
+        )
 
-        self.assertTrue(isinstance(form.fields['drivers'].widget, forms.CheckboxSelectMultiple))
+        self.assertTrue(
+            isinstance(form.fields["drivers"].widget,
+                       forms.CheckboxSelectMultiple)
+        )
 
         expected_queryset = get_user_model().objects.all()
-        self.assertQuerysetEqual(form.fields['drivers'].queryset, map(repr, expected_queryset))
+        self.assertQuerysetEqual(
+            form.fields["drivers"].queryset, map(repr, expected_queryset)
+        )
 
     def test_creation_form(self):
         form = DriverCreationForm()
@@ -49,11 +62,7 @@ class CarFormTest(TestCase):
             form = DriverCreationForm(data=form_data)
             self.assertFalse(form.is_valid(), form.errors)
 
-        valid_license_numbers = [
-            "ADM56984",
-            "JOY26458",
-            "JIM26531"
-        ]
+        valid_license_numbers = ["ADM56984", "JOY26458", "JIM26531"]
 
         for license_number in valid_license_numbers:
             form_data = {
@@ -74,29 +83,27 @@ class CarFormTest(TestCase):
             "AD3M56984",
         ]
         for license_number in invalid_license_numbers:
-            form_data = {
-                "license_number": license_number
-            }
+            form_data = {"license_number": license_number}
             form = DriverCreationForm(data=form_data)
             self.assertFalse(form.is_valid(), form.errors)
 
     def test_car_list_search_form(self):
         form = CarListSearchForm()
-        self.assertTrue('model' in form.fields)
-        self.assertTrue(form.fields['model'].required is False)
+        self.assertTrue("model" in form.fields)
+        self.assertTrue(form.fields["model"].required is False)
 
-        self.assertTrue(form.fields['model'].widget.attrs['placeholder'])
+        self.assertTrue(form.fields["model"].widget.attrs["placeholder"])
 
     def test_driver_list_search_form(self):
         form = DriverListSearchForm()
-        self.assertTrue('username' in form.fields)
-        self.assertTrue(form.fields['username'].required is False)
+        self.assertTrue("username" in form.fields)
+        self.assertTrue(form.fields["username"].required is False)
 
-        self.assertTrue(form.fields['username'].widget.attrs['placeholder'])
+        self.assertTrue(form.fields["username"].widget.attrs["placeholder"])
 
     def test_manufacturer_list_search_form(self):
         form = ManufacturerListSearchForm()
-        self.assertTrue('name' in form.fields)
-        self.assertTrue(form.fields['name'].required is False)
+        self.assertTrue("name" in form.fields)
+        self.assertTrue(form.fields["name"].required is False)
 
-        self.assertTrue(form.fields['name'].widget.attrs['placeholder'])
+        self.assertTrue(form.fields["name"].widget.attrs["placeholder"])
