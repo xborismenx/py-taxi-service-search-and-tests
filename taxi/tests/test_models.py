@@ -68,4 +68,4 @@ class ModelTests(TestCase):
         self.assertTrue(isinstance(manufacturer_field, ForeignKey))
 
         drivers_field = Car._meta.get_field("drivers")
-        self.assertTrue(isinstance(drivers_field, ForeignKey))
+        self.assertTrue(isinstance(drivers_field, ManyToManyField))
